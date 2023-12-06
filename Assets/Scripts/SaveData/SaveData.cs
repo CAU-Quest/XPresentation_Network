@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-//using Dummiesman;
+using Dummiesman;
 using Oculus.Interaction;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,6 +34,7 @@ public class SaveData : MonoBehaviour
 
     public Transform parent;
 
+    public GameObject[] prefabs;
     void Start()
     {
         if (null == Instance)
@@ -46,20 +47,13 @@ public class SaveData : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-    /*
-    public void SaveGameData()
-    {
-        MainSystem.Instance.NotifyObserverSaveData();
-        ES3.Save("ObjectData", objects);
-    }
-
     public void LoadGameData()
     {
         objects = ES3.Load<List<SaveObjectData>>("ObjectData");
         for (int i = 0; i < objects.Count; i++)
         {
             SaveObjectData data = objects[i];
-            GameObject go = PresentationObjectPool.Instance.Get((int)data.deployType - 1, Vector3.zero, parent);
+            GameObject go = Instantiate(prefabs[(int)data.deployType - 1], parent);
             if (data.deployType == DeployType.ImportImage)
             {
                 string imagePath = data.imagePath.Replace("#", "\\");
@@ -110,5 +104,4 @@ public class SaveData : MonoBehaviour
             }
         }
     }
-        */
 }

@@ -13,6 +13,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public TMP_InputField roomNameField;
 
     public TextMeshProUGUI text;
+
     public void Connect()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -59,6 +60,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         string roomName = GenerateRoomName();
         PhotonNetwork.CreateRoom(roomName, new RoomOptions());
         Debug.Log(roomName);
+    }
+
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        PhotonNetwork.Instantiate("NetworkPlayer", Vector3.one, Quaternion.identity);
     }
 
     public void JoinRoom()
