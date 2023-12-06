@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Oculus.Interaction;
+using TMPro;
 //using Oculus.Interaction;
 //using Oculus.Interaction.PoseDetection;
 using UnityEngine;
@@ -91,6 +92,7 @@ public class PresentationObject : MonoBehaviour, IObserver
     
     private MeshRenderer meshRenderer;
     private RawImage image;
+    private TMP_InputField tmpInputField;
     
     public Transform Transform => transform.parent;
     public Material Material => (meshRenderer) ? meshRenderer.material : null;
@@ -100,6 +102,7 @@ public class PresentationObject : MonoBehaviour, IObserver
     public bool isVisible = true;
     
     private Grabbable grabbable;
+    
     
     public void SetVisible()
     {
@@ -178,7 +181,7 @@ public class PresentationObject : MonoBehaviour, IObserver
         this.id = idCount++;
         
         meshRenderer = GetComponentInChildren<MeshRenderer>();
-
+        tmpInputField = GetComponentInChildren<TMP_InputField>();
         image = GetComponentInChildren<RawImage>();
         
         grabbable = GetComponent<Grabbable>();

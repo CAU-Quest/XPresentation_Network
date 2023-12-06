@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Dummiesman;
 using Oculus.Interaction;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,7 @@ public struct SaveObjectData
     public List<XRAnimation> animations;
     public string objectPath;
     public string imagePath;
+    public string text;
 }
 
 public enum DeployType
@@ -68,6 +70,9 @@ public class SaveData : MonoBehaviour
                 
                 string imagePath = data.imagePath.Replace("#", "\\");
                 model.GetComponentInChildren<MeshRenderer>().material.mainTexture = LoadTexture(imagePath);
+            } else if (data.deployType == DeployType.Text)
+            {
+                go.GetComponentInChildren<TMP_InputField>().text = data.text;
             }
             PresentationObject presentationObject = go.GetComponentInChildren<PresentationObject>();
             presentationObject.animationList = new List<XRAnimation>();
