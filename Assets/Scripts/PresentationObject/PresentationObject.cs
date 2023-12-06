@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Oculus.Interaction;
+using Photon.Pun;
 using TMPro;
 //using Oculus.Interaction;
 //using Oculus.Interaction.PoseDetection;
@@ -80,10 +81,12 @@ public struct SlideObjectData
     }
 }
 
-public class PresentationObject : MonoBehaviour, IObserver
+public class PresentationObject : MonoBehaviourPunCallbacks, IObserver
 {
     private static uint idCount = 1;
     public uint id = 1;
+
+    public PhotonView photonView;
     
     public List<XRAnimation> animationList = new List<XRAnimation>();
     public List<SlideObjectData> slideData = new List<SlideObjectData>();
@@ -140,6 +143,13 @@ public class PresentationObject : MonoBehaviour, IObserver
     
     public void ApplyDataToObject(SlideObjectData data) //SetSlideObjectData -> ApplySlideObjectData
     {
+        photonView.RPC("ApplyDataToObjectPunRPC", RpcTarget.AllBuffered, data);
+    }
+    
+    
+    [PunRPC]
+    public void ApplyDataToObjectPunRPC(SlideObjectData data) //SetSlideObjectData -> ApplySlideObjectData
+    {
         transform.parent.SetPositionAndRotation(data.position, data.rotation);
         transform.parent.localScale = data.scale;
         if (meshRenderer != null) meshRenderer.material.color = data.color;
@@ -173,7 +183,6 @@ public class PresentationObject : MonoBehaviour, IObserver
     public void Start()
     {
         Init();
-        ApplyDataToObject(slideData[MainSystem.Instance.currentSlideNum]);
     }
 
     public void Init()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Serialization;
 
