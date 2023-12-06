@@ -68,7 +68,6 @@ public class SaveData : MonoBehaviour
                 
                 string imagePath = data.imagePath.Replace("#", "\\");
                 model.GetComponentInChildren<MeshRenderer>().material.mainTexture = LoadTexture(imagePath);
-                element.AddComponent<PresentationObject>();
             }
             PresentationObject presentationObject = go.GetComponentInChildren<PresentationObject>();
             presentationObject.animationList = new List<XRAnimation>();
@@ -89,8 +88,8 @@ public class SaveData : MonoBehaviour
         {
             byte[] fileData = System.IO.File.ReadAllBytes(path);
 
-            Texture2D texture = new Texture2D(2, 2); // 텍스쳐의 가로 세로 크기를 지정합니다. 실제 크기에 맞게 수정하세요.
-            bool success = texture.LoadImage(fileData); // 바이트 배열을 텍스쳐에 로드합니다.
+            Texture2D texture = new Texture2D(2, 2);
+            bool success = texture.LoadImage(fileData);
 
             if (success)
             {

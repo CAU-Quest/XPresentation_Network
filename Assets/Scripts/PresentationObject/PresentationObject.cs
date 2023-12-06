@@ -79,7 +79,7 @@ public struct SlideObjectData
     }
 }
 
-public class PresentationObject : MonoBehaviour
+public class PresentationObject : MonoBehaviour, IObserver
 {
     private static uint idCount = 1;
     public uint id = 1;
@@ -128,6 +128,12 @@ public class PresentationObject : MonoBehaviour
 
     }
 
+    public void ObserverChangeSlide(int slide)
+    {
+        this.currentSlide = slide;
+
+        ApplyDataToObject(slideData[slide]);
+    }
     
     public void ApplyDataToObject(SlideObjectData data) //SetSlideObjectData -> ApplySlideObjectData
     {
@@ -158,7 +164,29 @@ public class PresentationObject : MonoBehaviour
     {
         return id;
     }
+    
+    
 
+    public void Start()
+    {
+        Init();
+        ApplyDataToObject(slideData[MainSystem.Instance.currentSlideNum]);
+    }
+
+    public void Init()
+    {
+        this.id = idCount++;
+        
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
+
+        image = GetComponentInChildren<RawImage>();
+        
+        grabbable = GetComponent<Grabbable>();
+        if (grabbable == null) grabbable = GetComponentInParent<Grabbable>();
+        MainSystem.Instance.RegisterObserver(this);
+    }
+
+    
     /*
     private static uint idCount = 1;
     public uint id = 1;
@@ -399,132 +427,6 @@ public class PresentationObject : MonoBehaviour
         }
     }
     
-
-    public void Start()
-    {
-        Init(MainSystem.Instance.currentSlideNum);
-        ApplyDataToObject(slideData[MainSystem.Instance.currentSlideNum]);
-    }
-
-    public void Init(int currentSlideNum)
-    {
-        this.id = idCount++;
-        deployType = GetComponentInParent<SelectObject>().deployType;
-        
-        meshRenderer = GetComponentInChildren<MeshRenderer>();
-
-        image = GetComponentInChildren<RawImage>();
-        //transform.GetChild(1).TryGetComponent(out RawImage image);
-        
-        canvas = GetComponentInChildren<Canvas>();
-        grabbable = GetComponent<Grabbable>();
-        if (grabbable == null) grabbable = GetComponentInParent<Grabbable>();
-        if(meshRenderer != null) normalModeMaterial = meshRenderer.material;
-        MainSystem.Instance.RegisterObserver(this);
-
-        if (slideData.Count == 0 && animationList.Count == 0)
-        {
-            SlideObjectData slideObjectData = new SlideObjectData();
-            
-            SlideObjectData nextSlideData = new SlideObjectData();
-            nextSlideData.position = Vector3.zero;
-            nextSlideData.rotation = Quaternion.identity;
-            nextSlideData.scale = Vector3.one;
-            nextSlideData.color = Color.white;
-            nextSlideData.isVisible = false;
-            nextSlideData.isGrabbable = false;
-            
-            for (int i = 0; i < MainSystem.Instance.GetSlideCount(); i++)
-            {
-                XRAnimation anim = new XRAnimation();
-                
-                slideObjectData.position = nextSlideData.position;
-                slideObjectData.rotation = nextSlideData.rotation;
-                slideObjectData.scale = nextSlideData.scale;
-                slideObjectData.isVisible = nextSlideData.isVisible;
-                slideObjectData.isGrabbable = nextSlideData.isGrabbable;
-                if (meshRenderer != null) slideObjectData.color = meshRenderer.material.color;
-                if (Image != null) slideObjectData.color = Image.color;
-                
-                nextSlideData = new SlideObjectData();
-                nextSlideData.position = Vector3.zero;
-                nextSlideData.rotation = Quaternion.identity;
-                nextSlideData.scale = Vector3.one;
-                nextSlideData.color = Color.white;
-                nextSlideData.isVisible = false;
-                nextSlideData.isGrabbable = false;
-                
-                if (currentSlideNum == i)
-                {
-                    slideObjectData.position = transform.parent.position;
-                    slideObjectData.rotation = transform.parent.rotation;
-                    slideObjectData.scale = transform.parent.localScale;
-                    if (meshRenderer != null) slideObjectData.color = meshRenderer.material.color;
-                    if (Image != null) slideObjectData.color = Image.color;
-                    slideObjectData.isVisible = true;
-                    slideObjectData.isGrabbable = true;
-                }
-                
-                anim.SetParentObject(this);
-                anim.SetPreviousSlideObjectData(slideObjectData);
-                anim.SetNextSlideObjectData(nextSlideData);
-                
-                animationList.Add(anim);
-                slideData.Add(slideObjectData);
-            }
-        }
-        else
-        {
-            Debug.Log("이미 잇음");
-            Debug.Log(animationList.Count + " 개의 animation + " + slideData.Count + " 개의 slide");
-        }
-        
-        
-        ghostObject = Instantiate(transform.parent.gameObject, transform.parent.parent);
-        TransformByVertexHandler tvh = ghostObject.GetComponent<TransformByVertexHandler>();
-        CenterPositionByVertex cpv = ghostObject.GetComponent<CenterPositionByVertex>();
-        BoundBox bb = ghostObject.GetComponent<BoundBox>();
-
-        if (tvh != null)
-        {
-            tvh.enabled = false;
-        }
-
-        if (cpv != null)
-        {
-            cpv.enabled = false;
-        }
-
-        if (bb != null)
-        {
-            bb.enabled = false;
-        }
-        
-
-        if (ghostObject == null)
-        {
-            Debug.LogError("ghostObject is null.");
-        }
-
-        GameObject go = ghostObject.GetComponentInChildren<PresentationObject>().gameObject;
-        if(meshRenderer != null)
-            go.GetComponentInChildren<MeshRenderer>().material = MainSystem.Instance.afterSlideMaterial;
-        Destroy(ghostObject.GetComponentInChildren<PresentationObject>());
-        ghost = go.AddComponent<PresentationGhostObject>();
-
-        if (ghost == null)
-        {
-            Debug.LogError("ghost is null.");
-        }
-        ghost.parentObject = this;
-        ghost.SetID(id);
-
-        dottedLine = Instantiate(MainSystem.Instance.dottedLinePrefab, ghostObject.transform);
-        dottedLine.GetComponent<XRAnimationLine>().object1 = this;
-        dottedLine.GetComponent<XRAnimationLine>().object2 = ghost;
-
-        ghostObject.SetActive(false);
-    }
 
     public void Update()
     {
