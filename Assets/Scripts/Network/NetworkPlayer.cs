@@ -40,6 +40,13 @@ public class NetworkPlayer : MonoBehaviour
         
             rightController.transform.position = Player.Instance.rightController.transform.position;
             rightController.transform.rotation = Player.Instance.rightController.transform.rotation;
+            
+            
+            var Xbutton = OVRInput.GetDown(OVRInput.RawButton.X);
+            var Ybutton = OVRInput.GetDown(OVRInput.RawButton.Y);
+        
+            if(Ybutton) MainSystem.Instance.AnimationToggle();
+            if(Xbutton) MainSystem.Instance.GoToPreviousSlide();
         }
     }
 }
