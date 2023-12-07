@@ -172,7 +172,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (data.deployType == DeployType.ImportImage)
             {
                 hashtable.Add( count.ToString() + "ObjectImagePath", data.imagePath);
-            } else if (data.deployType == DeployType.ImportImage)
+            } else if (data.deployType == DeployType.ImportModel)
             {
                 hashtable.Add( count.ToString() + "ObjectObjectPath", data.objectPath);
                 hashtable.Add( count.ToString() + "ObjectImagePath", data.imagePath);
@@ -214,7 +214,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (data.deployType == DeployType.ImportImage)
             {
                 data.imagePath = (string)hashtable[i.ToString() + "ObjectImagePath"];
-            } else if (data.deployType == DeployType.ImportImage)
+            } else if (data.deployType == DeployType.ImportModel)
             {
                 data.imagePath = (string)hashtable[i.ToString() + "ObjectImagePath"];
                 data.objectPath = (string)hashtable[i.ToString() + "ObjectObjectPath"];

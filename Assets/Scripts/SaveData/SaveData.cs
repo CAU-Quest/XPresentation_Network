@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Dummiesman;
 using Oculus.Interaction;
 using Photon.Pun;
@@ -62,7 +63,7 @@ public class SaveData : MonoBehaviour
         } else if (data.deployType == DeployType.ImportModel)
         {
             GameObject element = go.GetComponentInChildren<Grabbable>().gameObject;
-
+            Debug.Log("object Path : " + data.objectPath + ", image Path : " + data.imagePath);
             string objectPath = data.objectPath.Replace("#", "\\");
             GameObject model = new OBJLoader().Load(objectPath);
             model.transform.SetParent(element.transform);
@@ -71,6 +72,7 @@ public class SaveData : MonoBehaviour
             model.GetComponentInChildren<MeshRenderer>().material.mainTexture = LoadTexture(imagePath);
         } else if (data.deployType == DeployType.Text)
         {
+            Debug.Log("Text : " + data.text);
             GameObject element = go.GetComponentInChildren<Grabbable>().gameObject;
             element.GetComponentInChildren<TextMeshProUGUI>().text = data.text;
         }
@@ -112,19 +114,26 @@ public class SaveData : MonoBehaviour
 
     Texture2D LoadTexture(string path)
     {
-        byte[] fileData = System.IO.File.ReadAllBytes(path);
-
-        Texture2D texture = new Texture2D(2, 2);
-        bool success = texture.LoadImage(fileData);
-
-        if (success)
+        if (File.Exists(path))
         {
-            // 텍스쳐 로드 성공 시 반환
-            return texture;
+            byte[] fileData = System.IO.File.ReadAllBytes(path);
+
+            Texture2D texture = new Texture2D(2, 2); // 텍스쳐의 가로 세로 크기를 지정합니다. 실제 크기에 맞게 수정하세요.
+            bool success = texture.LoadImage(fileData); // 바이트 배열을 텍스쳐에 로드합니다.
+
+            if (success)
+            {
+                // 텍스쳐 로드 성공 시 반환
+                return texture;
+            }
+            else
+            {
+                // 텍스쳐 로드 실패 시 null 반환
+                return null;
+            }
         }
         else
         {
-            // 텍스쳐 로드 실패 시 null 반환
             return null;
         }
     }
