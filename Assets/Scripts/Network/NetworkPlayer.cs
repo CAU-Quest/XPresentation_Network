@@ -44,9 +44,15 @@ public class NetworkPlayer : MonoBehaviour
             
             var Xbutton = OVRInput.GetDown(OVRInput.RawButton.X);
             var Ybutton = OVRInput.GetDown(OVRInput.RawButton.Y);
+            
+            var Abutton = OVRInput.GetDown(OVRInput.RawButton.A);
+            var Bbutton = OVRInput.GetDown(OVRInput.RawButton.B);
         
             if(Ybutton) MainSystem.Instance.AnimationToggle();
             if(Xbutton) MainSystem.Instance.GoToPreviousSlide();
+            
+            if(Abutton) Player.Instance.transform.position = Vector3.zero;
+            if (Bbutton) Player.Instance.transform.position = new Vector3(0f, 0f, -5f);
         }
     }
 }
