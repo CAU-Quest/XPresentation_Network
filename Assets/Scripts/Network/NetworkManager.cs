@@ -102,6 +102,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     public TextMeshProUGUI text;
 
+    public GameObject player;
+
     public void Connect()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -200,10 +202,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             PhotonNetwork.Instantiate("NetworkPlayer", Vector3.one, Quaternion.identity);
+            player.transform.position = Vector3.zero;
         }
         else
         {
             PhotonNetwork.Instantiate("NetworkPlayer", new Vector3(0f, 0f, -5f), Quaternion.identity);
+            player.transform.position = new Vector3(0f, 0f, -5f);
         }
 
         Hashtable hashtable = PhotonNetwork.CurrentRoom.CustomProperties;

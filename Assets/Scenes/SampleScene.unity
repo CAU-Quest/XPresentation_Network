@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43414697, g: 0.41185376, b: 0.44578034, a: 1}
+  m_IndirectSpecularColor: {r: 0.4341302, g: 0.41183975, b: 0.4457681, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1438,6 +1438,7 @@ MonoBehaviour:
   roomNameField: {fileID: 5189346101251419033}
   saveData: {fileID: 1877256830}
   text: {fileID: 4281328479308668209}
+  player: {fileID: 732921229}
 --- !u!4 &718191613
 Transform:
   m_ObjectHideFlags: 0
