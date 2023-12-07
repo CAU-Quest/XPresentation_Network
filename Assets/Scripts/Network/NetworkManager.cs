@@ -195,7 +195,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        PhotonNetwork.Instantiate("NetworkPlayer", Vector3.one, Quaternion.identity);
+        Debug.Log("Hello");
+        
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            PhotonNetwork.Instantiate("NetworkPlayer", Vector3.one, Quaternion.identity);
+        }
+        else
+        {
+            PhotonNetwork.Instantiate("NetworkPlayer", new Vector3(0f, 0f, -5f), Quaternion.identity);
+        }
 
         Hashtable hashtable = PhotonNetwork.CurrentRoom.CustomProperties;
 
