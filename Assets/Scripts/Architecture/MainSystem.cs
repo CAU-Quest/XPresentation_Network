@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class MainSystem : MonoBehaviour, ISubject
@@ -14,6 +15,8 @@ public class MainSystem : MonoBehaviour, ISubject
     [SerializeField]
     public float slideInterval;
     public bool isPlayingAnimation = true;
+
+    public PhotonView photonView;
     
     void Awake()
     {
@@ -45,14 +48,40 @@ public class MainSystem : MonoBehaviour, ISubject
                         slideInterval = 0;
                         currentSlideNum += 1;
                         isPlayingAnimation = false;
+                        NotifyObserversChangeSlide(currentSlideNum);
                     }
                 }
             }
         }
     }
     
-    
+    public void SetCurrentSlideCount(int count)
+    {
+        slideCount = count;
+    }
+
     public void GoToPreviousSlide()
+    {
+        photonView.RPC("GoToPreviousSlideRPC", RpcTarget.All);
+    }
+
+    public void GoToNextSlide()
+    {
+        photonView.RPC("GoToNextSlideRPC", RpcTarget.All);
+    }
+    
+    public void AnimationToggle()
+    {
+        photonView.RPC("AnimationToggleRPC", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void AnimationToggleRPC()
+    {
+        isPlayingAnimation = true;
+    }
+    [PunRPC]
+    public void GoToPreviousSlideRPC()
     {
         if (currentSlideNum > 0)
         {
@@ -60,10 +89,11 @@ public class MainSystem : MonoBehaviour, ISubject
             slideInterval = 0;
             isPlayingAnimation = false;
             NotifyObserversChangeSlide(currentSlideNum);
-        }
+        }   
     }
 
-    public void GoToNextSlide()
+    [PunRPC]
+    public void GoToNextSlideRPC()
     {
         if (currentSlideNum < slideCount - 1)
         {
@@ -97,6 +127,7 @@ public class MainSystem : MonoBehaviour, ISubject
 
     public void NotifyObserversChangeSlide(int slide)
     {
+        PhotonNetwork.CurrentRoom.CustomProperties["SlideNum"] = currentSlideNum;
         for (int i = 0; i < observers.Count; i++)
         {
             observers[i].ObserverChangeSlide(currentSlideNum);

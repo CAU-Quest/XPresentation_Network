@@ -17,7 +17,7 @@ public class SaveDataEditor : Editor
         
         if (GUILayout.Button("Load Data"))
         {
-            saveData.LoadGameDataRPC();
+            //saveData.LoadGameDataRPC();
         }
 
     }

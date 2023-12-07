@@ -143,13 +143,6 @@ public class PresentationObject : MonoBehaviourPunCallbacks, IObserver
     
     public void ApplyDataToObject(SlideObjectData data) //SetSlideObjectData -> ApplySlideObjectData
     {
-        photonView.RPC("ApplyDataToObjectPunRPC", RpcTarget.AllBuffered, data);
-    }
-    
-    
-    [PunRPC]
-    public void ApplyDataToObjectPunRPC(SlideObjectData data) //SetSlideObjectData -> ApplySlideObjectData
-    {
         transform.parent.SetPositionAndRotation(data.position, data.rotation);
         transform.parent.localScale = data.scale;
         if (meshRenderer != null) meshRenderer.material.color = data.color;
@@ -180,10 +173,6 @@ public class PresentationObject : MonoBehaviourPunCallbacks, IObserver
     
     
 
-    public void Start()
-    {
-        Init();
-    }
 
     public void Init()
     {

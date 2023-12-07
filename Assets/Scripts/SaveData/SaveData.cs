@@ -52,12 +52,6 @@ public class SaveData : MonoBehaviour
         }
     }
 
-    public void LoadData(SaveObjectData data)
-    {
-        photonView.RPC("MakeDataBySlideObjectData", RpcTarget.AllBuffered, data);
-    }
-    
-    [PunRPC]
     public void MakeDataBySlideObjectData(SaveObjectData data)
     {
         GameObject go = Instantiate(prefabs[(int)data.deployType - 1], parent);
@@ -93,18 +87,29 @@ public class SaveData : MonoBehaviour
             data.animations[j].presentationObject = presentationObject;
             presentationObject.animationList.Add(data.animations[j]);
         }
-            
+
+        presentationObject.Init();
         presentationObject.ApplyDataToObject(presentationObject.slideData[MainSystem.Instance.currentSlideNum]);
     }
-    public void LoadGameDataRPC()
+    
+    
+    public List<SaveObjectData> LoadData()
     {
         objects = ES3.Load<List<SaveObjectData>>("ObjectData");
-        for (int i = 0; i < objects.Count; i++)
-        {
-            SaveObjectData data = objects[i];
-            LoadData(data);
-        }
+        //photonView.RPC("MakeDataBySlideObjectData", RpcTarget.AllBuffered, data);
+        return objects;
     }
+
+    public int LoadSlideCount()
+    {
+        return ES3.Load<int>("SlideCount");
+    }
+
+    public List<VideoData> LoadVideoDatas()
+    {
+        return ES3.Load<List<VideoData>>("VideoData");
+    }
+
     Texture2D LoadTexture(string path)
     {
         byte[] fileData = System.IO.File.ReadAllBytes(path);
