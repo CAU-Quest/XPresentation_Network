@@ -100,7 +100,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public SaveData saveData;
     
-    public TextMeshProUGUI text;
+    public TextMeshProUGUI roomNameText;
 
     public GameObject player;
 
@@ -197,8 +197,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        Debug.Log("Hello");
-        
+        Debug.Log("Hello : " + PhotonNetwork.CurrentRoom.Name);
+
+        roomNameText.text = PhotonNetwork.CurrentRoom.Name;
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             PhotonNetwork.Instantiate("NetworkPlayer", Vector3.one, Quaternion.identity);
@@ -246,10 +247,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinRoom(roomNameField.text);
     }
 
-    private void Update()
-    {
-        text.text = PhotonNetwork.LocalPlayer.NickName;
-    }
 
 
     #region Serialize Field
